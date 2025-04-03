@@ -1,0 +1,38 @@
+# === Rust and Cargo ===
+target/
+**/*.rs.bk
+**/*.swp
+Cargo.lock
+
+# === Build scripts / generated files ===
+*.rlib
+*.dll
+*.so
+*.dylib
+*.exe
+*.out
+
+# === Logs and temp files ===
+*.log
+*.tmp
+*.bak
+
+# === VSCode and IDE settings ===
+.vscode/
+.idea/
+*.code-workspace
+
+# === OS-specific files ===
+.DS_Store
+Thumbs.db
+
+# === dotenv ===
+.env
+.env.*
+
+# === Node/npm (if you use a frontend later) ===
+node_modules/
+
+# === By-products ===
+coverage/
+dist/
