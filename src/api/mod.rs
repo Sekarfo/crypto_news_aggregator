@@ -1,18 +1,35 @@
 use reqwest;
 use std::error::Error;
-use super::models::{ApiResponse, NewsArticle};
+use super::models::{NewsArticle};
 
-/// Fetch news articles by keyword or symbol using an external API.
 pub async fn fetch_news(query: &str, api_key: &str) 
     -> Result<Vec<NewsArticle>, Box<dyn Error>> 
 {
-    // Build your API URL; adjust for your chosen data provider
     let url = format!(
-        "https://api.example.com/news?query={}&apiKey={}",
+        "https://newsapi.org/v2/everything?q={}&apiKey={}",
         query, api_key
     );
 
-    // Send request and deserialize into ApiResponse
-    let resp = reqwest::get(&url).await?.json::<ApiResponse>().await?;
-    Ok(resp.data)
+    let response = reqwest::get(&url).await?;
+    let news_response: serde_json::Value = response.json().await?;
+    
+    let mut articles = Vec::new();
+    
+    if let Some(items) = news_response["articles"].as_array() {
+        for item in items {
+            let source_name = item["source"]["name"].as_str().unwrap_or("Unknown");
+            
+            let article = NewsArticle {
+                title: item["title"].as_str().unwrap_or("No title").to_string(),
+                source: source_name.to_string(),
+                published_at: item["publishedAt"].as_str().unwrap_or("Unknown date").to_string(),
+                summary: item["description"].as_str().map(|s| s.to_string()),
+                url: item["url"].as_str().unwrap_or("#").to_string(),
+            };
+            
+            articles.push(article);
+        }
+    }
+    
+    Ok(articles)
 }

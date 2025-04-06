@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-/// Represents a single news article from an external API.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewsArticle {
     pub title: String,
@@ -10,10 +9,24 @@ pub struct NewsArticle {
     pub url: String,
 }
 
-/// Represents the structure of a response from the external API.
-/// Adjust fields based on the actual API response.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct ApiResponse {
-    pub data: Vec<NewsArticle>,
-    // If the API returns status codes, errors, etc., add them here.
+    pub status: String,
+    pub totalResults: usize,
+    pub articles: Vec<ApiArticle>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiArticle {
+    pub source: Source,
+    pub title: String,
+    pub description: Option<String>,
+    pub url: String,
+    pub publishedAt: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Source {
+    pub id: Option<String>,
+    pub name: String,
 }
