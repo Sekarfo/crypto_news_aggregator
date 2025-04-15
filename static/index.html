@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeekCrypto</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .metadata-box {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            gap: 20px;
+            background-color: #fafafa;
+        }
+
+        .metadata-box img {
+            border-radius: 12px;
+            background-color: white;
+        }
+
+        .metadata-details h2 {
+            margin: 0 0 10px 0;
+        }
+
+        .metadata-details p {
+            margin: 6px 0;
+        }
+
+        .news-article {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .news-article:hover {
+            transform: scale(1.01);
+        }
+
+        .news-article h3 {
+            margin: 0;
+        }
+
+        .news-article p {
+            margin: 5px 0;
+        }
+
+        .news-article a {
+            text-decoration: none;
+            color: #0077cc;
+        }
+
+        .news-article a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">GeekCrypto</h1>
+        <input type="text" id="symbolInput" placeholder="Enter symbol (e.g., BTC, SOL)">
+        <button onclick="fetchNews()">Search</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function fetchNews() {
+            const symbol = document.getElementById('symbolInput').value.trim();
+            const container = document.getElementById('result');
+            container.innerHTML = '';
+
+            if (!symbol) {
+                container.innerHTML = '<p style="color: red; text-align: center;">Please enter a symbol to search.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/news?symbol=${symbol}`);
+                const data = await response.json();
+
+                // Metadata section
+                const meta = data.metadata;
+                const metaHTML = `
+                    <div class="metadata-box">
+                        <img src="${meta.logo}" alt="${meta.symbol} logo" width="64" height="64">
+                        <div class="metadata-details">
+                            <h2>${meta.name} (${meta.symbol})</h2>
+                            <p>${meta.description}</p>
+                            ${meta.website ? `<p><a href="${meta.website}" target="_blank">🌐 Official Website</a></p>` : ''}
+                            ${meta.explorer ? `<p><a href="${meta.explorer}" target="_blank">🔍 Explorer</a></p>` : ''}
+                            ${meta.source_code ? `<p><a href="${meta.source_code}" target="_blank">💻 Source Code</a></p>` : ''}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += metaHTML;
+
+                // News section
+                data.news.forEach(article => {
+                    const articleHTML = `
+                        <div class="news-article">
+                            <h3><a href="${article.link}" target="_blank">${article.title}</a></h3>
+                            <p><strong>📰 Source:</strong> ${article.source} &nbsp; | &nbsp; <strong>🕒 Date:</strong> ${article.date}</p>
+                            <p>${article.summary}</p>
+                        </div>
+                    `;
+                    container.innerHTML += articleHTML;
+                });
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                container.innerHTML = '<p style="color: red; text-align: center;">Error fetching news. Please try again later.</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>
