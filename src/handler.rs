@@ -12,7 +12,7 @@ pub async fn news_handler(symbol: String) -> Result<impl warp::Reply, warp::Reje
         return Ok(warp::reply::json(&cached));
     }
     
-    // If not cached, fetch from APIs
+    // if not cached, fetch from APIs
     let news = fetch_from_cryptopanic(&symbol).await;
     let meta = fetch_metadata_coinmarketcap(&symbol).await;
 

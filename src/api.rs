@@ -53,7 +53,7 @@ pub async fn fetch_metadata_coinmarketcap(symbol: &str) -> Result<CoinMetadata, 
         .json::<serde_json::Value>()
         .await?;
     
-    // data is a map of { "BTC": { ... } }
+    // data is map of { "BTC": { ... } }
     if let Some(data_map) = res.get("data").and_then(|d| d.as_object()) {
         if let Some(array) = data_map.get(&symbol.to_uppercase()).and_then(|v| v.as_array()) {
             if let Some(value) = array.first() {

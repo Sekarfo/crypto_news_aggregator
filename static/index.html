@@ -85,7 +85,7 @@
                 const response = await fetch(`/news?symbol=${symbol}`);
                 const data = await response.json();
 
-                // Metadata section
+                // METADATA SECTION
                 const meta = data.metadata;
                 const metaHTML = `
                     <div class="metadata-box">
@@ -101,7 +101,7 @@
                 `;
                 container.innerHTML += metaHTML;
 
-                // News section
+                // NEWS SECTION
                 data.news.forEach(article => {
                     const articleHTML = `
                         <div class="news-article">
